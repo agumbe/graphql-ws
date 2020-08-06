@@ -2,7 +2,6 @@ from inspect import isawaitable
 from asyncio import ensure_future, wait, shield
 
 from aiohttp import WSMsgType
-from graphql.execution.executors.asyncio import AsyncioExecutor
 
 from .base import (
     ConnectionClosedException, BaseConnectionContext, BaseSubscriptionServer)
@@ -50,8 +49,7 @@ class AiohttpSubscriptionServer(BaseSubscriptionServer):
     def get_graphql_params(self, *args, **kwargs):
         params = super(AiohttpSubscriptionServer,
                        self).get_graphql_params(*args, **kwargs)
-        return dict(params, return_promise=True,
-                    executor=AsyncioExecutor(loop=self.loop))
+        return dict(params, return_promise=True)
 
     async def _handle(self, ws, request_context=None):
         connection_context = AiohttpConnectionContext(ws, request_context)
