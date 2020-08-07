@@ -82,7 +82,8 @@ class AiohttpSubscriptionServer(BaseSubscriptionServer):
             task.cancel()
 
     async def handle(self, ws, request_context=None):
-        await shield(self._handle(ws, request_context), loop=self.loop)
+        print("calling handle")
+        await shield(self._handle(ws, request_context))     # removed loop param as its deprecated
 
     async def on_open(self, connection_context):
         pass
