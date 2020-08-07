@@ -49,7 +49,7 @@ class AiohttpSubscriptionServer(BaseSubscriptionServer):
     def get_graphql_params(self, *args, **kwargs):
         params = super(AiohttpSubscriptionServer,
                        self).get_graphql_params(*args, **kwargs)
-        return dict(params, return_promise=True)
+        return dict(params, is_awaitable=False) # change return_promise to is_awaitable False
 
     async def _handle(self, ws, request_context=None):
         connection_context = AiohttpConnectionContext(ws, request_context)

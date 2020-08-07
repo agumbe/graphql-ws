@@ -42,8 +42,8 @@ class WsLibSubscriptionServer(BaseSubscriptionServer):
     def get_graphql_params(self, *args, **kwargs):
         params = super(WsLibSubscriptionServer,
                        self).get_graphql_params(*args, **kwargs)
-        return dict(params, return_promise=True,
-                    executor=AsyncioExecutor(loop=self.loop))
+        return dict(params, is_awaitable=False,
+                    executor=AsyncioExecutor(loop=self.loop)) # change return_promise to is_awaitable False
 
     async def _handle(self, ws, request_context):
         connection_context = WsLibConnectionContext(ws, request_context)
