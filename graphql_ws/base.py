@@ -89,9 +89,11 @@ class BaseSubscriptionServer(object):
             return self.on_connection_terminate(connection_context, op_id)
 
         elif op_type == GQL_START:
+            log.info("inside on_message for GQL_START")
             assert isinstance(payload, dict), "The payload must be a dict"
 
             params = self.get_graphql_params(connection_context, payload)
+            log.info("inside on_message for GQL_START params %r", params)
             if not isinstance(params, dict):
                 error = Exception(
                     "Invalid params returned from get_graphql_params!"
@@ -101,8 +103,10 @@ class BaseSubscriptionServer(object):
             # If we already have a subscription with this id, unsubscribe from
             # it first
             if connection_context.has_operation(op_id):
+                log.info("inside on_message op_id %r not found", op_id)
                 self.unsubscribe(connection_context, op_id)
 
+            log.info("inside on_message call on_start")
             return self.on_start(connection_context, op_id, params)
 
         elif op_type == GQL_STOP:
