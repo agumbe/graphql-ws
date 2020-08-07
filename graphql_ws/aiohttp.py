@@ -107,16 +107,21 @@ class AiohttpSubscriptionServer(BaseSubscriptionServer):
             await connection_context.close(1011)
 
     async def on_start(self, connection_context, op_id, params):
+        log.info("inside on_start")
         execution_result = self.execute(
             connection_context.request_context, params)
-
+        log.info("inside on_start execution_result is %r", execution_result)
         if isawaitable(execution_result):
+            log.info("inside on_start isawaitable execution_result")
             execution_result = await execution_result
+            log.info("inside on_start isawaitable execution_result %r", execution_result)
 
         if not hasattr(execution_result, '__aiter__'):
+            log.info("inside on_start not has __aiter__")
             await self.send_execution_result(
                 connection_context, op_id, execution_result)
         else:
+            log.info("inside on_start has __aiter__")
             iterator = await execution_result.__aiter__()
             connection_context.register_operation(op_id, iterator)
             async for single_result in iterator:
