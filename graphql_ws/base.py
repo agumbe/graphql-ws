@@ -170,6 +170,7 @@ class BaseSubscriptionServer(object):
         return connection_context.close(1011)
 
     def execute(self, request_context, params):
+        log.info("inide execute self.schema is %r", self.schema)
         return graphql(
             self.schema, **dict(params))
 
