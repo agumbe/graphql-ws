@@ -15,6 +15,8 @@ from .constants import (
 
 setup_observable_extension()
 
+import logging
+log = logging.getLogger('emergent-ng911')
 
 class AiohttpConnectionContext(BaseConnectionContext):
     async def receive(self):
@@ -52,24 +54,24 @@ class AiohttpSubscriptionServer(BaseSubscriptionServer):
         return dict(params, is_awaitable=False) # change return_promise to is_awaitable False
 
     async def _handle(self, ws, request_context=None):
-        print("inside ws _handle")
+        log.info("inside ws _handle")
         connection_context = AiohttpConnectionContext(ws, request_context)
-        print("inside ws _handle got connection_context")
+        log.info("inside ws _handle got connection_context")
         await self.on_open(connection_context)
-        print("inside ws _handle after on_open")
+        log.info("inside ws _handle after on_open")
         pending = set()
         while True:
             try:
                 if connection_context.closed:
-                    print("inside ws _handle ConnectionClosedException")
+                    log.info("inside ws _handle ConnectionClosedException")
                     raise ConnectionClosedException()
-                print("inside ws call receive")
+                log.info("inside ws call receive")
                 message = await connection_context.receive()
-                print("inside ws got message %r" % message)
+                log.info("inside ws got message %r" % message)
             except ConnectionClosedException:
                 break
             finally:
-                print("inside ws finally")
+                log.info("inside ws finally")
                 if pending:
                     (_, pending) = await wait(pending, timeout=0, loop=self.loop)
 
@@ -82,7 +84,7 @@ class AiohttpSubscriptionServer(BaseSubscriptionServer):
             task.cancel()
 
     async def handle(self, ws, request_context=None):
-        print("calling handle")
+        log.info("calling handle")
         await shield(self._handle(ws, request_context))     # removed loop param as its deprecated
 
     async def on_open(self, connection_context):
