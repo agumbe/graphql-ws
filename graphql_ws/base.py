@@ -171,9 +171,11 @@ class BaseSubscriptionServer(object):
 
     def execute(self, request_context, params):
         log.info("inide execute self.schema is %r, params is %r", self.schema, params)
-        #result = await self.schema.subscribe(subscription)
-        return graphql(
-            self.schema, **dict(params))
+        result = await self.schema.subscribe(params["source"])
+        log.info("inide execute result is %r", result)
+        return result
+        #return graphql(
+        #    self.schema, **dict(params))
 
     def handle(self, ws, request_context=None):
         raise NotImplementedError("handle method not implemented")
