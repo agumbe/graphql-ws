@@ -170,6 +170,7 @@ class BaseSubscriptionServer(object):
         raise NotImplementedError("handle method not implemented")
 
     def on_message(self, connection_context, message):
+        print("inside on_message for %r" % message)
         try:
             if not isinstance(message, dict):
                 parsed_message = json.loads(message)

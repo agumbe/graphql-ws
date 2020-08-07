@@ -52,17 +52,24 @@ class AiohttpSubscriptionServer(BaseSubscriptionServer):
         return dict(params, is_awaitable=False) # change return_promise to is_awaitable False
 
     async def _handle(self, ws, request_context=None):
+        print("inside ws _handle")
         connection_context = AiohttpConnectionContext(ws, request_context)
+        print("inside ws _handle got connection_context")
         await self.on_open(connection_context)
+        print("inside ws _handle after on_open")
         pending = set()
         while True:
             try:
                 if connection_context.closed:
+                    print("inside ws _handle ConnectionClosedException")
                     raise ConnectionClosedException()
+                print("inside ws call receive")
                 message = await connection_context.receive()
+                print("inside ws got message %r" % message)
             except ConnectionClosedException:
                 break
             finally:
+                print("inside ws finally")
                 if pending:
                     (_, pending) = await wait(pending, timeout=0, loop=self.loop)
 
